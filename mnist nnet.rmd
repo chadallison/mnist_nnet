@@ -1,0 +1,146 @@
+---
+title: "Building a neural network for MNIST data"
+author: "Chad Allison | 29 November 2022"
+output: github_document
+---
+
+___
+
+Here, I will build a neural network model to identify handwritten digits using the [MNIST dataset](https://www.kaggle.com/c/digit-recognizer/overview) which I have obtained from Kaggle.
+
+___
+
+### Importing libraries and setting some quality of life options
+
+```{r message = F, warning = F}
+library(tidyverse)
+library(keras)
+library(tensorflow)
+library(yardstick)
+library(tidymodels)
+
+knitr::opts_chunk$set(message = F, warning = F)
+options(scipen = 999)
+theme_set(theme_classic())
+```
+
+___
+
+### Importing the data
+
+```{r}
+mnist = read_csv("mnist_data.csv", col_types = cols())
+head(mnist)
+```
+
+The data has 42,000 observations with 785 variables. The first variable, `label` is our outcome variable, while the rest of the variables are the brightness of the pixel indicated by the variable name.
+
+___
+
+### Cross validation
+
+We will split the data into training and testing data, electing to use 80% as training data and the remaining 20% as testing data. We will also identify `label` as our outcome variable in order to preserve balance between classes.
+
+```{r}
+split = initial_split(mnist, prop = 0.8, strata = "label")
+train = training(split)
+test = testing(split)
+
+# creating a `set` variable to combine the two and create visual
+train$set = "train"
+test$set = "test"
+
+rbind(train, test) |>
+  mutate(label = factor(label)) |>
+  group_by(set) |>
+  count(label) |>
+  mutate(prop = ifelse(set == "train", round(n / nrow(train), 3), round(n / nrow(test), 3))) |>
+  ggplot(aes(label, prop)) +
+  geom_col(aes(fill = set), position = "dodge") +
+  scale_fill_manual(values = c("#CAA2D0", "#90BD90")) +
+  labs(title = "class balance between testing and training data") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+# removing the `set` variable for later use
+train = train |> select(-set)
+test = test |> select(-set)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
